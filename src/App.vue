@@ -1,5 +1,4 @@
-
-<template> 
+<template>
   <a-layout>
     <a-layout-header class="header">
       <div class="logo" />
@@ -8,10 +7,11 @@
         theme="dark"
         mode="horizontal"
         :style="{ lineHeight: '64px' }"
+        @click="itemClick"
       >
         <template v-for="(item, index) in array" :key="index">
           <div>
-            <a-menu-item :key="index" @click="itemClick(index, item)">{{
+            <a-menu-item :key="index">{{
               item.name
             }}</a-menu-item>
           </div>
@@ -73,20 +73,19 @@
         <a-layout-content
           :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
         >
-         
           <router-view></router-view>
         </a-layout-content>
       </a-layout>
     </a-layout>
-  </a-layout> 
+  </a-layout>
 </template>
-<script>  
+<script>
 import {
   UserOutlined,
   LaptopOutlined,
   NotificationOutlined,
 } from "@ant-design/icons-vue";
-import { defineComponent, ref } from "vue"; 
+import { defineComponent, ref } from "vue";
 import { useRouter } from "vue-router";
 
 export default defineComponent({
@@ -96,32 +95,39 @@ export default defineComponent({
     NotificationOutlined,
   },
   setup() {
+    // 读取公共变量
+    console.log( import.meta.env.VITE_AJAX_API)
     const router = useRouter();
-    const selectedKeys1 = ref(["0"]);
+    let selectedKeys1 = ref(["-1"]);
+    let selectedKeys2 = ref(["1"]);
+    let collapsed = ref(false);
+    let openKeys = ref(["sub1"]);
+    let array = ref([
+      { name: "nav 1", path: "/" },
+      { name: "nav 2", path: "/about" },
+      { name: "nav 3", path: "/nav" },
+    ]);
+    let itemClick = (i)=>{
+      selectedKeys1 =ref(`[${i.key}]`) ;
+      router.push({ path: array._rawValue[i.key].path });
+      console.log(selectedKeys1);
+    };
     return {
       selectedKeys1,
-      selectedKeys2: ref(["1"]),
-      collapsed: ref(false),
-      openKeys: ref(["sub1"]),
-      array: ref([
-        { name: "nav 1", path: "/" },
-        { name: "nav 2", path: "/about" },
-        { name: "nav 3", path: "/nav" },
-      ]),
-      itemClick(i, e) {
-        this.selectedKeys1 = i + 1;
-        router.push({ path: e.path });
-        console.log(selectedKeys1);
-      },
+      selectedKeys2,
+      collapsed,
+      openKeys,
+      array,
+      itemClick
     };
   },
-})
+});
 
 const router = useRouter();
-const selectedKeys1 = ref(["0"]); 
+const selectedKeys1 = ref(["0"]);
 </script>
 
-<style scoped> 
+<style scoped>
 #components-layout-demo-top-side-2 .logo {
   float: left;
   width: 120px;
